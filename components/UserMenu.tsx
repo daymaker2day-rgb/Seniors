@@ -11,9 +11,11 @@ interface UserMenuProps {
   currentUser: UserRole;
   onUserChange: (user: UserRole) => void;
   onLayoutChange: (layout: UserRole[]) => void;
+  onToggleVideos: (show: boolean) => void;
+  videosVisible: boolean;
 }
 
-const UserMenu: React.FC<UserMenuProps> = ({ currentUser, onUserChange, onLayoutChange }) => {
+const UserMenu: React.FC<UserMenuProps> = ({ currentUser, onUserChange, onLayoutChange, onToggleVideos, videosVisible }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const userRoles: UserRole[] = [
@@ -91,12 +93,23 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser, onUserChange, onLayout
               </div>
 
               {/* Layout Options */}
-              <div className="border-t border-gray-700 pt-2">
+              <div className="border-t border-gray-700 pt-2 space-y-1">
                 <button
                   onClick={handleLayoutSwap}
                   className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
                 >
                   🔄 Swap Video Positions
+                </button>
+                
+                {/* Video Visibility Toggle */}
+                <button
+                  onClick={() => {
+                    onToggleVideos(!videosVisible);
+                    setIsOpen(false);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+                >
+                  {videosVisible ? '👁️ Hide Video Images' : '👁️‍🗨️ Show Video Images'}
                 </button>
               </div>
             </div>

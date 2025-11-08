@@ -4,9 +4,10 @@ import { UserRole } from './UserMenu';
 interface LiveVideoPreviewProps {
   currentUser: UserRole;
   userLayout: UserRole[];
+  videosVisible: boolean;
 }
 
-const LiveVideoPreview: React.FC<LiveVideoPreviewProps> = ({ currentUser, userLayout }) => {
+const LiveVideoPreview: React.FC<LiveVideoPreviewProps> = ({ currentUser, userLayout, videosVisible }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +52,14 @@ const LiveVideoPreview: React.FC<LiveVideoPreviewProps> = ({ currentUser, userLa
       </div>
       
       {/* Video Content */}
-      {isLive && !error ? (
+      {!videosVisible ? (
+        <div className="flex flex-col items-center justify-center text-gray-400">
+          <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center mb-1">
+            📺
+          </div>
+          <span className="text-xs">Video Hidden</span>
+        </div>
+      ) : isLive && !error ? (
         <video 
           ref={videoRef} 
           autoPlay 

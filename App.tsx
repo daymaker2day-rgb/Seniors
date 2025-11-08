@@ -35,6 +35,9 @@ const App: React.FC = () => {
     { id: 'client', name: 'Client', position: 'top-right', color: 'bg-purple-500' }
   ]);
 
+  // Video visibility state
+  const [videosVisible, setVideosVisible] = useState<boolean>(true);
+
   // Fix: Use ReturnType<typeof setTimeout> for the timeout ID type.
   // This is compatible with browser environments where setTimeout returns a number,
   // resolving the "Cannot find namespace 'NodeJS'" error.
@@ -117,6 +120,10 @@ const App: React.FC = () => {
     setUserLayout(newLayout);
   };
 
+  const handleToggleVideos = (show: boolean) => {
+    setVideosVisible(show);
+  };
+
 
   return (
     <>
@@ -130,6 +137,8 @@ const App: React.FC = () => {
             currentUser={currentUser}
             onUserChange={handleUserChange}
             onLayoutChange={handleLayoutChange}
+            onToggleVideos={handleToggleVideos}
+            videosVisible={videosVisible}
           />
           
           <div className="w-full max-w-7xl mx-auto my-8 flex justify-center">
@@ -144,6 +153,7 @@ const App: React.FC = () => {
           <LiveVideoPreview 
             currentUser={currentUser}
             userLayout={userLayout}
+            videosVisible={videosVisible}
           />
 
           <main className="w-full max-w-7xl mx-auto mt-8">
