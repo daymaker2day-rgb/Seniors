@@ -7,6 +7,7 @@ import CalendarModal from './components/CalendarModal';
 import LiveVideoPreview from './components/LiveVideoPreview';
 import ScheduleModal from './components/ScheduleModal';
 import ReminderToast from './components/ReminderToast';
+import { UserRole } from './components/UserMenu';
 import { ACTIVITIES } from './constants';
 import type { Activity, Appointment } from './types';
 
@@ -19,6 +20,20 @@ const App: React.FC = () => {
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [activeReminder, setActiveReminder] = useState<Appointment | null>(null);
+
+  // User role state
+  const [currentUser, setCurrentUser] = useState<UserRole>({
+    id: 'me',
+    name: 'Me',
+    position: 'center',
+    color: 'bg-blue-500'
+  });
+
+  const [userLayout, setUserLayout] = useState<UserRole[]>([
+    { id: 'me', name: 'Me', position: 'center', color: 'bg-blue-500' },
+    { id: 'family', name: 'Family Member', position: 'top-left', color: 'bg-green-500' },
+    { id: 'client', name: 'Client', position: 'top-right', color: 'bg-purple-500' }
+  ]);
 
   // Fix: Use ReturnType<typeof setTimeout> for the timeout ID type.
   // This is compatible with browser environments where setTimeout returns a number,
@@ -89,6 +104,19 @@ const App: React.FC = () => {
     handleOpenF2F(activity);
   };
 
+  const handleUserChange = (user: UserRole) => {
+    setCurrentUser(user);
+    // Update the layout to reflect the current user's position
+    const updatedLayout = userLayout.map(u => 
+      u.id === user.id ? { ...u, position: 'center' as const } : u
+    );
+    setUserLayout(updatedLayout);
+  };
+
+  const handleLayoutChange = (newLayout: UserRole[]) => {
+    setUserLayout(newLayout);
+  };
+
 
   return (
     <>
@@ -98,7 +126,11 @@ const App: React.FC = () => {
         <div className="absolute bottom-0 right-0 translate-x-1/3 translate-y-1/3 w-96 h-96 bg-gradient-to-tl from-purple-500/10 to-pink-600/10 rounded-full blur-3xl animate-pulse animation-delay-4000"></div>
 
         <div className="relative z-10 flex flex-col items-center">
-          <Header />
+          <Header 
+            currentUser={currentUser}
+            onUserChange={handleUserChange}
+            onLayoutChange={handleLayoutChange}
+          />
           
           <div className="w-full max-w-7xl mx-auto my-8 flex justify-center">
             <button
@@ -109,7 +141,10 @@ const App: React.FC = () => {
             </button>
           </div>
 
-          <LiveVideoPreview />
+          <LiveVideoPreview 
+            currentUser={currentUser}
+            userLayout={userLayout}
+          />
 
           <main className="w-full max-w-7xl mx-auto mt-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
