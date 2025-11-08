@@ -1,0 +1,29 @@
+# Senior Advertising Bot Requirements
+
+# Core dependencies
+requests>=2.31.0
+python-dotenv>=1.0.0
+
+# Email functionality
+smtplib  # Built-in Python module
+
+# Social media APIs (optional - uncomment as needed)
+# facebook-sdk>=3.1.0
+# tweepy>=4.14.0
+
+# Web scraping/automation (if needed for community sites)
+# selenium>=4.15.0
+# beautifulsoup4>=4.12.0
+
+# Scheduling and timing
+schedule>=1.2.0
+
+# Data handling
+pandas>=2.1.0
+openpyxl>=3.1.0  # For Excel file handling
+
+# Logging and monitoring
+colorlog>=6.7.0
+
+# Security
+cryptography>=41.0.0

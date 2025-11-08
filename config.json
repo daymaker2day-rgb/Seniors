@@ -1,0 +1,51 @@
+{
+  "business_name": "Senior Support Services",
+  "target_message": "Providing patient, clear technology help and services for seniors",
+  "contact_info": "📞 Call us at: (555) 123-4567 | 📧 Email: help@seniorservices.com",
+  "platforms": {
+    "facebook": {
+      "enabled": false,
+      "group_ids": [],
+      "access_token": "",
+      "note": "Enable this after setting up Facebook API"
+    },
+    "email": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "username": "",
+      "password": "",
+      "recipients": [],
+      "note": "Add email recipients and credentials"
+    },
+    "community_sites": {
+      "enabled": false,
+      "urls": [
+        "https://example-senior-community.com",
+        "https://local-senior-forum.com"
+      ],
+      "note": "Add URLs of senior community sites"
+    }
+  },
+  "posting_schedule": {
+    "frequency_hours": 24,
+    "max_posts_per_day": 3,
+    "respect_quiet_hours": true,
+    "senior_friendly_times": {
+      "morning": "9:00-11:00",
+      "afternoon": "13:00-15:00", 
+      "evening": "18:00-20:00"
+    }
+  },
+  "message_style": {
+    "tone": "respectful_and_clear",
+    "include_emojis": true,
+    "max_length": 300,
+    "include_contact_info": true
+  },
+  "compliance": {
+    "respect_rate_limits": true,
+    "avoid_spam": true,
+    "senior_appropriate_content": true
+  }
+}
