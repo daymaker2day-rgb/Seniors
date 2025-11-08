@@ -21,18 +21,16 @@ const App: React.FC = () => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [activeReminder, setActiveReminder] = useState<Appointment | null>(null);
 
-  // User role state
+  // User role state - Default to DayMaker only
   const [currentUser, setCurrentUser] = useState<UserRole>({
-    id: 'me',
-    name: 'Me',
+    id: 'daymaker',
+    name: 'DayMaker',
     position: 'center',
-    color: 'bg-blue-500'
+    color: 'bg-gradient-to-r from-cyan-500 to-purple-500'
   });
 
   const [userLayout, setUserLayout] = useState<UserRole[]>([
-    { id: 'me', name: 'Me', position: 'center', color: 'bg-blue-500' },
-    { id: 'family', name: 'Family Member', position: 'top-left', color: 'bg-green-500' },
-    { id: 'client', name: 'Client', position: 'top-right', color: 'bg-purple-500' }
+    { id: 'daymaker', name: 'DayMaker', position: 'center', color: 'bg-gradient-to-r from-cyan-500 to-purple-500' }
   ]);
 
   // Video visibility state

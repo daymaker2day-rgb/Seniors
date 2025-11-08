@@ -11,9 +11,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ currentUser, onUserChange, onLayoutChange, onToggleVideos, videosVisible }) => {
   return (
-    <header className="relative text-center my-8">
-      {/* User Menu - Top Right */}
-      <div className="absolute top-0 right-4 md:right-8">
+    <>
+      {/* User Menu - Fixed to Far Top Right Corner */}
+      <div className="fixed top-4 right-4 z-50">
         <UserMenu 
           currentUser={currentUser}
           onUserChange={onUserChange}
@@ -23,6 +23,8 @@ const Header: React.FC<HeaderProps> = ({ currentUser, onUserChange, onLayoutChan
         />
       </div>
 
+      <header className="relative text-center my-8">
+
       <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 pb-2">
         DayMaker
       </h1>
@@ -30,6 +32,7 @@ const Header: React.FC<HeaderProps> = ({ currentUser, onUserChange, onLayoutChan
         Your daily spark of connection. Discover fun and easy activities to share with friends and family, anytime, anywhere.
       </p>
     </header>
+    </>
   );
 };
 

@@ -80,46 +80,26 @@ const LiveVideoPreview: React.FC<LiveVideoPreviewProps> = ({ currentUser, userLa
     </div>
   );
 
-  // Find users by position
-  const centerUser = userLayout.find(u => u.position === 'center') || currentUser;
-  const topLeftUser = userLayout.find(u => u.position === 'top-left');
-  const topRightUser = userLayout.find(u => u.position === 'top-right');
-
   return (
     <div className="w-full max-w-2xl mx-auto my-8 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 shadow-lg">
       <h2 className="text-xl font-semibold text-cyan-300 mb-4 text-center">
-        Senior Connect Video Call
+        DayMaker Live Video
       </h2>
       
-      <div className="relative">
-        {/* Small video boxes - Top positioning */}
-        <div className="absolute top-2 left-2 right-2 z-10 flex justify-between">
-          {/* Top Left */}
-          {topLeftUser && (
-            <VideoBox user={topLeftUser} />
-          )}
-          
-          {/* Top Right */}
-          {topRightUser && (
-            <VideoBox user={topRightUser} />
-          )}
-        </div>
-
-        {/* Main video box - Center */}
-        <div className="w-full">
-          <VideoBox 
-            user={centerUser} 
-            isMain={true} 
-            isLive={currentUser.id === centerUser.id} 
-          />
-        </div>
+      {/* Main video box - DayMaker only */}
+      <div className="w-full">
+        <VideoBox 
+          user={currentUser} 
+          isMain={true} 
+          isLive={true} 
+        />
       </div>
 
       {/* Current View Indicator */}
       <div className="mt-3 text-center">
         <span className="text-sm text-gray-400">
-          Viewing as: <span className={`px-2 py-1 ${currentUser.color} text-white text-xs rounded-full ml-1`}>
-            {currentUser.name}
+          Connected as: <span className="px-2 py-1 bg-gradient-to-r from-cyan-500 to-purple-500 text-white text-xs rounded-full ml-1">
+            DayMaker
           </span>
         </span>
       </div>
