@@ -7,16 +7,30 @@ import CalendarModal from './components/CalendarModal';
 import LiveVideoPreview from './components/LiveVideoPreview';
 import ScheduleModal from './components/ScheduleModal';
 import ReminderToast from './components/ReminderToast';
+import AuthPage from './components/AuthPage';
+import ContentCreationModal from './components/ContentCreationModal';
+import SettingsModal from './components/SettingsModal';
 import { UserRole } from './components/UserMenu';
 import { ACTIVITIES } from './constants';
+import { UsageTracker } from './utils/usageTracker';
 import type { Activity, Appointment } from './types';
 
 const REMINDER_LEAD_TIME_MS = 5 * 60 * 1000; // 5 minutes
 
+interface UserInfo {
+  phone: string;
+  plan: string;
+  name: string;
+  email?: string;
+}
+
 const App: React.FC = () => {
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [isF2FModalOpen, setIsF2FModalOpen] = useState(false);
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+  const [isContentCreationModalOpen, setIsContentCreationModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [activeReminder, setActiveReminder] = useState<Appointment | null>(null);
@@ -33,13 +47,37 @@ const App: React.FC = () => {
     { id: 'daymaker', name: 'DayMaker', position: 'center', color: 'bg-gradient-to-r from-cyan-500 to-purple-500' }
   ]);
 
+  // Camera state
+  const [cameraEnabled, setCameraEnabled] = useState<boolean>(true);
+  
   // Video visibility state
   const [videosVisible, setVideosVisible] = useState<boolean>(true);
 
-  // Fix: Use ReturnType<typeof setTimeout> for the timeout ID type.
-  // This is compatible with browser environments where setTimeout returns a number,
-  // resolving the "Cannot find namespace 'NodeJS'" error.
   const reminderTimeoutIds = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  // Check for saved user on app load
+  useEffect(() => {
+    const savedUser = localStorage.getItem('daymaker_user');
+    if (savedUser) {
+      const userData = JSON.parse(savedUser);
+      // Check if login is within last 30 days
+      const loginDate = new Date(userData.loginDate);
+      const now = new Date();
+      const daysDiff = Math.floor((now.getTime() - loginDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (daysDiff < 30) {
+        setUserInfo({ 
+          phone: userData.phone || userData.email, // Support legacy email users
+          plan: userData.plan, 
+          name: userData.name,
+          email: userData.email
+        });
+      } else {
+        // Clear old data
+        localStorage.removeItem('daymaker_user');
+      }
+    }
+  }, []);
 
   useEffect(() => {
     // Cleanup all timeouts when the component unmounts
@@ -48,15 +86,62 @@ const App: React.FC = () => {
     };
   }, []);
 
+  const handleAuthComplete = (userData: UserInfo) => {
+    // Save to both new and legacy storage for compatibility
+    const saveData = {
+      ...userData,
+      loginDate: new Date().toISOString()
+    };
+    
+    localStorage.setItem('daymaker_user', JSON.stringify(saveData));
+    setUserInfo(userData);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('daymaker_user');
+    setUserInfo(null);
+  };
+
 
   const handleOpenF2F = (activity: Activity) => {
+    // Check if user can start activity (usage limits)
+    if (userInfo) {
+      const usageCheck = UsageTracker.canStartActivity(userInfo.phone, userInfo.plan);
+      if (!usageCheck.allowed) {
+        alert(usageCheck.reason);
+        return;
+      }
+      
+      // Record activity usage
+      UsageTracker.recordActivityStart(userInfo.phone, userInfo.plan);
+    }
+    
     setSelectedActivity(activity);
-    setIsF2FModalOpen(true);
+    
+    // Special handling for Content Creation
+    if (activity.title === 'Content Creation') {
+      setIsContentCreationModalOpen(true);
+    } else {
+      setIsF2FModalOpen(true);
+    }
   };
 
   const handleCloseF2F = () => {
     setIsF2FModalOpen(false);
     setSelectedActivity(null);
+  };
+
+  const handleCloseContentCreation = () => {
+    setIsContentCreationModalOpen(false);
+    setSelectedActivity(null);
+  };
+
+  const handleOpenSettings = () => {
+    setIsSettingsModalOpen(true);
+  };
+
+  const handleCloseSettings = () => {
+    setIsSettingsModalOpen(false);
   };
 
   const handleOpenCalendar = () => {
@@ -122,6 +207,14 @@ const App: React.FC = () => {
     setVideosVisible(show);
   };
 
+  const handleToggleCamera = (enabled: boolean) => {
+    setCameraEnabled(enabled);
+  };
+
+  // Show authentication page if user is not logged in
+  if (!userInfo) {
+    return <AuthPage onComplete={handleAuthComplete} />;
+  }
 
   return (
     <>
@@ -137,6 +230,10 @@ const App: React.FC = () => {
             onLayoutChange={handleLayoutChange}
             onToggleVideos={handleToggleVideos}
             videosVisible={videosVisible}
+            onToggleCamera={handleToggleCamera}
+            cameraEnabled={cameraEnabled}
+            onSignOut={handleSignOut}
+            onOpenSettings={handleOpenSettings}
           />
           
           <div className="w-full max-w-7xl mx-auto my-8 flex justify-center">
@@ -162,6 +259,7 @@ const App: React.FC = () => {
                   activity={activity}
                   onStartF2F={handleOpenF2F}
                   onSchedule={handleOpenSchedule}
+                  userPlan={userInfo?.plan}
                 />
               ))}
             </div>
@@ -185,6 +283,17 @@ const App: React.FC = () => {
         />
       )}
       <CalendarModal isOpen={isCalendarModalOpen} onClose={handleCloseCalendar} appointments={appointments} />
+      {selectedActivity && (
+        <ContentCreationModal
+          isOpen={isContentCreationModalOpen}
+          onClose={handleCloseContentCreation}
+          activity={selectedActivity}
+        />
+      )}
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={handleCloseSettings}
+      />
       {activeReminder && (
         <ReminderToast
           appointment={activeReminder}

@@ -109,7 +109,8 @@ export const ACTIVITIES: Activity[] = [
   {
     emoji: '🌴',
     title: 'Virtual Vacation',
-    description: 'Use Google Earth or YouTube to “travel” to a beautiful spot together.',
+    description: 'Use Google Earth or YouTube to "travel" to a beautiful spot together.',
+    premium: true
   },
   {
     emoji: '🤳',
@@ -125,6 +126,7 @@ export const ACTIVITIES: Activity[] = [
     emoji: '📺',
     title: 'Nostalgia Night',
     description: 'Look up old commercials, jingles, or shows from their youth and laugh.',
+    premium: true
   },
   {
     emoji: '🎵',
@@ -150,5 +152,17 @@ export const ACTIVITIES: Activity[] = [
     emoji: '🌞',
     title: 'Good News Roundup',
     description: 'Each find and share one happy, funny, or uplifting story from the week.',
+  },
+  {
+    emoji: '💻',
+    title: 'Tech/Device Help',
+    description: 'Get friendly help with your phone, computer, or any device questions.',
+    premium: true
+  },
+  {
+    emoji: '🎨',
+    title: 'Content Creation',
+    description: 'Create virtual cards, simple images, or digital memories together.',
+    premium: true
   },
 ];

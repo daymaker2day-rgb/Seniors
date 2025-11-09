@@ -2,6 +2,7 @@ export interface Activity {
   emoji: string;
   title: string;
   description: string;
+  premium?: boolean; // Mark premium-only activities
 }
 
 export interface Appointment {
@@ -11,4 +12,11 @@ export interface Appointment {
   activity: Activity;
   clientName: string;
   notes?: string;
+}
+
+export interface UserUsage {
+  activitiesUsed: number;
+  sessionTimeUsed: number; // in minutes
+  lastResetDate: string; // YYYY-MM-DD
+  plan: 'basic' | 'premium';
 }
